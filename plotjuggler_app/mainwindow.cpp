@@ -898,6 +898,10 @@ QDomDocument MainWindow::xmlSaveState() const
   relative_time.setAttribute("enabled", ui->buttonRemoveTimeOffset->isChecked());
   root.appendChild(relative_time);
 
+  QDomElement streaming_buffer = doc.createElement("streaming_buffer_value");
+  streaming_buffer.setAttribute("value", ui->streamingSpinBox->value());
+  root.appendChild(streaming_buffer);
+
   return doc;
 }
 
@@ -1030,6 +1034,14 @@ bool MainWindow::xmlLoadState(QDomDocument state_document)
     bool remove_offset = (relative_time.attribute("enabled") == QString("1"));
     ui->buttonRemoveTimeOffset->setChecked(remove_offset);
   }
+
+  QDomElement streaming_buffer = root.firstChildElement("streaming_buffer_value");
+  if (!streaming_buffer.isNull())
+  {
+    int buffer_value = streaming_buffer.attribute("value").toInt();
+    ui->streamingSpinBox->setValue(buffer_value);
+  }
+
   return true;
 }
 
